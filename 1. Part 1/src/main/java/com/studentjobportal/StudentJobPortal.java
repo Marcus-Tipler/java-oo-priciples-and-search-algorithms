@@ -1,14 +1,25 @@
 package com.studentjobportal;
 
-// Composition root and startup point for the application
+import com.studentjobportal.cli.StudentJobPortalCli;
+import com.studentjobportal.data.SampleJobData;
+import com.studentjobportal.model.Job;
+import java.util.List;
+import java.util.Scanner;
+
+// Starting point with little to no responsibility
 public final class StudentJobPortal {
 
     private StudentJobPortal() {
-    // Prevent instantiation of the application entry-point class
     }
 
     public static void main(String[] args) {
-    // Application dependencies will be created and connected here
-    // No business, search, repository or user-interface logic will go here
+        List<Job> jobs = SampleJobData.createJobs();
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            StudentJobPortalCli application =
+                    new StudentJobPortalCli(scanner, jobs);
+
+            application.run();
+        }
     }
 }
