@@ -1,11 +1,7 @@
 {
-    "folder-color.pathColors": [],
-
     "java.project.sourcePaths": [
-        "1. Part 1/src"
+        "1. Part 1/src/main/java",
+        "1. Part 1/src/test/java"
     ],
-    "java.project.outputPath": "1. Part 1/bin",
-    "java.project.referencedLibraries": [
-        "1. Part 1/lib/**/*.jar"
-    ]
+    "java.project.outputPath": "1. Part 1/bin"
 }
