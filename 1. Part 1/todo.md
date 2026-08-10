@@ -2,25 +2,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
-## Phase 2 — Replace the parallel lists with domain objects
-
-The five parallel lists are the biggest immediate risk. Their indexes must always remain synchronised.
-
-- [ ] Create an immutable `Job` domain class containing fields such as:
-
-```text
-id
-title
-company
-jobType
-location
-```
-
-- [ ] Make fields `private final`.
-- [ ] Add accessor methods.
-- [ ] Implement `toString()`, `equals()` and `hashCode()`.
-- [ ] Define equality deliberately—usually by immutable job ID.
-- [ ] Replace all parallel lists with a single `List<Job>`.
 - [ ] Add model tests for equality, hashing and string representation.
 
 **Checkpoint:** Adding a new field cannot cause several lists to fall out of alignment.
