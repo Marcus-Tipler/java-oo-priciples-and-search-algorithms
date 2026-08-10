@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.sourcePaths": [
+			"1. Part 1/src/main/java",
+			"1. Part 1/src/test/java"
+		],
+		"java.project.outputPath": "1. Part 1/bin",
+		"java.server.launchMode": "Standard",
+		"java.import.exclusions": [
+			"**/node_modules/**",
+			"**/.metadata/**",
+			"**/archetype-resources/**",
+			"**/META-INF/maven/**",
+			"**/0. Provided Source Code/**",
+			"**/1. Part 1/bin/**"
+		],
+		"java.project.resourceFilters": [
+			"node_modules",
+			"\\.git",
+			"0\\. Provided Source Code",
+			"bin"
+		],
+		"folder-color.pathColors": []
+	}
+}
