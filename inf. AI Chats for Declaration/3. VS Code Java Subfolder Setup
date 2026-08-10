@@ -1,0 +1,178 @@
+TODO: ME
+
+You are an expert programmer, and enthusiast JAVA developer.
+How do i get Visual Studio Code to understand a sub folder as the primary project folder for a Java Project?
+
+FIXME: CHATGPT
+
+Yes. In VS Code, there are a few ways to make a **subfolder behave as the Java project root**, and the best one depends on your folder structure.
+
+For example, suppose you have:
+
+```text
+Coursework/
+├── README.md
+├── docs/
+├── assignment/
+│   ├── src/
+│   │   └── Main.java
+│   ├── lib/
+│   └── bin/
+└── notes/
+```
+
+and you want VS Code's Java tooling to treat `assignment/` as the actual Java project.
+
+### Easiest solution: open the subfolder
+
+In VS Code:
+
+**File → Open Folder… → select `assignment/`**
+
+Then VS Code sees:
+
+```text
+assignment/        ← VS Code workspace root
+├── src/
+├── lib/
+└── bin/
+```
+
+This is generally the cleanest approach. The Java Language Server, debugger, testing tools, imports, etc. will operate relative to that directory.
+
+### If you need the parent folder open
+
+If you want to keep `Coursework/` open because it contains other files, configure the Java extension.
+
+Create:
+
+```text
+Coursework/
+└── .vscode/
+    └── settings.json
+```
+
+with something like:
+
+```json
+{
+    "java.project.sourcePaths": [
+        "assignment/src"
+    ],
+    "java.project.outputPath": "assignment/bin",
+    "java.project.referencedLibraries": [
+        "assignment/lib/**/*.jar"
+    ]
+}
+```
+
+This tells VS Code:
+
+```text
+Coursework/
+│
+├── assignment/
+│   ├── src/        ← Java source
+│   ├── lib/        ← dependencies
+│   └── bin/        ← compiled .class files
+│
+└── .vscode/
+    └── settings.json
+```
+
+For a simple university Java project, this works well.
+
+### Better still: use Maven or Gradle
+
+If your subfolder contains something like:
+
+```text
+Coursework/
+└── assignment/
+    ├── pom.xml
+    └── src/
+        ├── main/
+        │   └── java/
+        └── test/
+            └── java/
+```
+
+then **don't manually configure `java.project.sourcePaths`**.
+
+The presence of `pom.xml` tells the Java tooling that `assignment/` is a Maven project, and VS Code should import the project model.
+
+Similarly, Gradle:
+
+```text
+Coursework/
+└── assignment/
+    ├── build.gradle
+    └── src/
+```
+
+should be detected as a Gradle project.
+
+### One particularly useful VS Code feature: multi-root workspaces
+
+If your situation is more like:
+
+```text
+University/
+├── CM2307/
+│   ├── coursework/
+│   ├── notes/
+│   └── specification.pdf
+├── OtherModule/
+└── PersonalStuff/
+```
+
+but only:
+
+```text
+CM2307/coursework/
+```
+
+is the Java project, you can use a `.code-workspace` file and explicitly add that directory as a workspace folder.
+
+For example:
+
+```json
+{
+    "folders": [
+        {
+            "name": "CM2307 Coursework",
+            "path": "CM2307/coursework"
+        }
+    ]
+}
+```
+
+Then VS Code essentially treats that subdirectory as a top-level workspace folder.
+
+### One thing to watch for
+
+After changing any of this, VS Code's Java Language Server can retain its old project interpretation.
+
+Open the Command Palette:
+
+```text
+Cmd + Shift + P
+```
+
+and run:
+
+```text
+Java: Clean Java Language Server Workspace
+```
+
+Then allow VS Code to restart/reload.
+
+That fixes a surprising number of situations where VS Code is saying things like:
+
+```text
+The declared package "x.y" does not match the expected package
+```
+
+or where imports/classes aren't being detected correctly.
+
+If you show me **your actual folder structure** (even just the output of `tree`), I can tell you exactly what I'd configure for it.

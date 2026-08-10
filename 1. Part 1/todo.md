@@ -1,33 +1,234 @@
 Part 1 - Student Job Application maintainability, test-ability and extend-ability exercise
 
-## This document is made for Obsidian MD with the To-Do list plugin.
-- [ ] Replace list items for domain objects.
-- [ ] Instead of Public Statics, i'd like to replace them for Private Finals (if necessary), it's generally better practice. 
-- [ ] Have constructors for each method.
-- [ ] Move everything OUT of MAIN
-    - Add service layer with trace-able error management
-    - Display menus else-where in new class
+## This document is made for Obsidian MD with the To-Do 
 
-I think the Builder pattern suits this job better because a job can have several properties that work together, and more properties might need adding later (extend-ability), however currently with static lists, that can easily cause corruption. (if i added a wage to the list, i'd have to go through and add wages to all previous jobs or else the program might crash.). Builder avoids long constructors and makes creation readable.
-- [ ] Validate required fields inside build function so that invalid jobs cannot be created.
+## Phase 2 — Replace the parallel lists with domain objects
 
-- [ ] Add repository abstractions (create interfaces for each repo such as jobs, and implement accessible public classes)
+The five parallel lists are the biggest immediate risk. Their indexes must always remain synchronised.
 
-- [ ] Searching currently only looks at the title, maybe implement a Strategy Pattern to Searching Implementation (based on AI declaration doc 1)?
+- [ ] Create an immutable `Job` domain class containing fields such as:
 
-- [ ] Fix menu to display missing "Saved Jobs" because there's no point of having that variable otherwise, i'm assuming this is what the coursework intends me to do? If not, just use it as proof of extend-ability? Have these:
-    1. View all jobs
-    2. Search jobs
-    3. Save a job
-    4. View saved jobs
-    5. Apply for a job
-    6. View applications
-    7. Exit
+```text
+id
+title
+company
+jobType
+location
+```
 
-- Input really should have validation
-    try catch
-- errors should all be trace-able
-For domain objects, implement toString(), equals() & hashCode()
+- [ ] Make fields `private final`.
+- [ ] Add accessor methods.
+- [ ] Implement `toString()`, `equals()` and `hashCode()`.
+- [ ] Define equality deliberately—usually by immutable job ID.
+- [ ] Replace all parallel lists with a single `List<Job>`.
+- [ ] Add model tests for equality, hashing and string representation.
 
+**Checkpoint:** Adding a new field cannot cause several lists to fall out of alignment.
 
-- Create well needed test files and structure the program like an actual java program instead of having a single java file. (something like "cli", "models", "repos", "services", "data" and "search")
+## Phase 3 — Add controlled object creation
+
+- [ ] Introduce `Job.Builder` if demonstrating the Builder pattern supports the coursework.
+- [ ] Make builder calls readable, for example conceptually:
+
+```java
+Job.builder()
+    .id(...)
+    .title(...)
+    .company(...)
+    .jobType(...)
+    .location(...)
+    .build();
+```
+
+- [ ] Validate required fields in `build()`.
+- [ ] Reject null, blank or otherwise invalid values.
+- [ ] Prevent creation of partially valid `Job` objects.
+- [ ] Test successful construction and every important validation failure.
+
+One nuance: Builder solves construction readability and future field growth. The move from parallel lists to `Job` objects is what directly prevents list corruption.
+
+## Phase 4 — Model saved jobs and applications properly
+
+- [ ] Remove `savedJobs` as a parallel `List<Boolean>`.
+- [ ] Represent saved jobs using job IDs, such as a repository-backed `Set<JobId>`.
+- [ ] Create an `Application` domain class if applications need to be viewed.
+- [ ] Give each application enough information to identify the job and its status or submission time.
+- [ ] Implement `toString()`, `equals()` and `hashCode()` for `Application`.
+- [ ] Decide and document behaviours such as:
+
+  - Can the same job be saved twice?
+  - Can the same job be applied for twice?
+  - What happens if a referenced job no longer exists?
+
+## Phase 5 — Introduce repository abstractions
+
+Define what the program needs before deciding how it is stored.
+
+- [ ] Create a `JobRepository` interface.
+- [ ] Add operations such as:
+
+```text
+findAll
+findById
+save
+```
+
+- [ ] Create `SavedJobRepository`.
+- [ ] Create `ApplicationRepository`.
+- [ ] Implement accessible in-memory versions, for example:
+
+```text
+InMemoryJobRepository
+InMemorySavedJobRepository
+InMemoryApplicationRepository
+```
+
+- [ ] Store collections as `private final` fields inside repository implementations.
+- [ ] Return safe views or copies rather than exposing mutable internal collections.
+- [ ] Add repository tests.
+
+Avoid placing search business rules in the repository unless the repository contract explicitly owns querying.
+
+## Phase 6 — Move sample data into the data layer
+
+- [ ] Remove the hard-coded sample jobs from `main()`.
+- [ ] Create a data seeder or fixture class.
+- [ ] Construct the two initial jobs through the same validated creation mechanism used elsewhere.
+- [ ] Insert them through `JobRepository`.
+
+**Checkpoint:** `main()` no longer knows the details of the sample jobs.
+
+## Phase 7 — Add the search Strategy pattern
+
+- [ ] Create a `JobSearchStrategy` interface.
+- [ ] Implement individual strategies where useful:
+
+```text
+TitleSearchStrategy
+CompanySearchStrategy
+LocationSearchStrategy
+JobTypeSearchStrategy
+CombinedKeywordSearchStrategy
+```
+
+- [ ] Make searches case-insensitive.
+- [ ] Decide how blank search terms should behave.
+- [ ] Keep strategy implementations independent of console input/output.
+- [ ] Add focused tests for matches, non-matches, casing and blank input.
+
+The current code already searches title, company and location, despite the note saying it searches only titles. The real improvement is making that behaviour explicit, replaceable and independently testable.
+
+## Phase 8 — Add the service layer
+
+- [ ] Create a `JobService`.
+- [ ] Create a `SavedJobService`.
+- [ ] Create an `ApplicationService`.
+- [ ] Inject repositories and search strategies through constructors.
+- [ ] Move business operations into services:
+
+```text
+view all jobs
+search for jobs
+save a job
+view saved jobs
+apply for a job
+view applications
+```
+
+- [ ] Keep services independent of `Scanner` and `System.out`.
+- [ ] Add service tests using in-memory repositories or test doubles.
+
+A service should return results or throw a meaningful exception; it should not display menu messages.
+
+## Phase 9 — Make errors traceable
+
+- [ ] Create specific exceptions where they improve clarity, such as:
+
+```text
+JobNotFoundException
+JobValidationException
+DuplicateSavedJobException
+DuplicateApplicationException
+```
+
+- [ ] Include useful context in messages, especially the relevant job ID.
+- [ ] Preserve original causes when translating lower-level exceptions.
+- [ ] Avoid broad `catch (Exception)` blocks.
+- [ ] Handle expected user mistakes near the CLI boundary.
+- [ ] Allow unexpected programming faults to remain visible during development.
+- [ ] Add tests for service failure paths.
+
+“Traceable” does not mean catching everything. It means failures retain enough context to locate their source.
+
+## Phase 10 — Extract the command-line interface
+
+- [ ] Create a dedicated menu or CLI class, such as `JobPortalCli`.
+- [ ] Inject the services and input/output dependencies through its constructor.
+- [ ] Move the main loop into that class.
+- [ ] Replace the long `if/else` chain with a `switch`.
+- [ ] Display the complete menu:
+
+```text
+1. View all jobs
+2. Search jobs
+3. Save a job
+4. View saved jobs
+5. Apply for a job
+6. View applications
+7. Exit
+```
+
+- [ ] Give each menu option a small, named handler method.
+- [ ] Ensure the CLI only coordinates input, service calls and output.
+
+After this phase, `main()` should roughly do only three things:
+
+1. Construct repositories and services.
+2. Seed initial data.
+3. Start the CLI.
+
+## Phase 11 — Validate all user input
+
+- [ ] Read menu input as text and parse it safely.
+- [ ] Catch `NumberFormatException` for numeric selections.
+- [ ] Reject menu options outside `1–7`.
+- [ ] Validate job numbers before accessing a collection.
+- [ ] Handle blank search keywords.
+- [ ] Print useful messages when jobs, saved jobs or applications are absent.
+- [ ] Ensure invalid input returns to the menu rather than terminating the program.
+- [ ] Test input validation where practical.
+
+Reading a line and parsing it is generally simpler than mixing `nextInt()` and `nextLine()`, which commonly produces skipped-input problems.
+
+## Phase 12 — Complete verification and cleanup
+
+- [ ] Test every domain object.
+- [ ] Test builder validation.
+- [ ] Test every repository implementation.
+- [ ] Test each search strategy.
+- [ ] Test service success and error paths.
+- [ ] Add a small CLI integration test if time permits.
+- [ ] Remove obsolete static lists and commented-out legacy logic.
+- [ ] Check that mutable state is private and appropriately protected.
+- [ ] Check that every dependency is supplied through a constructor.
+- [ ] Confirm that `main()` contains no business logic.
+- [ ] Run the full test suite and manually exercise all seven menu options.
+
+A sensible implementation order is therefore:
+
+```text
+Project structure
+→ Job model
+→ Builder and validation
+→ Saved-job/Application models
+→ Repository interfaces
+→ In-memory repositories
+→ Seed data
+→ Search strategies
+→ Services and exceptions
+→ CLI and menus
+→ Input validation
+→ Final integration testing
+```
+
+This order gives you a compilable checkpoint after every stage and lets you explain each design decision independently in your coursework.
