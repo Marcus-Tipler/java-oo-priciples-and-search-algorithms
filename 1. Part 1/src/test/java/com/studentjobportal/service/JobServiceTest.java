@@ -1,8 +1,11 @@
 package com.studentjobportal.service;
 
-import static com.studentjobportal.TestAssertions.assertContains;
-import static com.studentjobportal.TestAssertions.assertEquals;
-import static com.studentjobportal.TestAssertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import com.studentjobportal.exception.JobNotFoundException;
 import com.studentjobportal.model.Job;
 import com.studentjobportal.model.JobID;
@@ -10,88 +13,59 @@ import com.studentjobportal.repository.InMemoryJobRepository;
 import com.studentjobportal.repository.JobRepository;
 import com.studentjobportal.search.TitleSearchStrategy;
 
-public final class JobServiceTest {
+/**
+ * Verifies job retrieval and delegation to an injected search strategy.
+ */
+final class JobServiceTest {
 
     private static final JobID JOB_ID = JobID.from(
             "d61b9fa8-c23c-43af-b60c-3903512c8d01"
     );
+    private static final JobID MISSING_JOB_ID = JobID.from(
+            "87b3effd-61da-4d18-ae1e-dd186ea283f7"
+    );
 
-    public static void main(String[] args) {
-        returnsAllJobs();
-        returnsJobById();
-        searchesUsingInjectedStrategy();
-        returnsNoResultsForBlankSearch();
-        throwsForMissingJob();
-
-        System.out.println("All JobService tests passed.");
+    @Test
+    void returnsAllJobs() {
+        assertEquals(1, createService().getAllJobs().size());
     }
 
-    private static void returnsAllJobs() {
-        JobService service = createService();
-
-        assertEquals(1, service.getAllJobs().size());
-    }
-
-    private static void returnsJobById() {
-        JobService service = createService();
-
-        Job job = service.getJobById(JOB_ID);
+    @Test
+    void returnsJobById() {
+        Job job = createService().getJobById(JOB_ID);
 
         assertEquals(JOB_ID, job.getId());
         assertEquals("Java Developer", job.getTitle());
     }
 
-    private static void searchesUsingInjectedStrategy() {
+    @Test
+    void searchesUsingInjectedStrategy() {
         JobService service = createService();
 
-        assertEquals(
-                1,
-                service.searchJobs("JAVA").size()
-        );
-
-        /*
-         * The injected strategy searches titles only.
-         */
-        assertEquals(
-                0,
-                service.searchJobs("Tech Solutions").size()
-        );
+        assertEquals(1, service.searchJobs("JAVA").size());
+        // The injected title strategy must not match a company-only term.
+        assertTrue(service.searchJobs("Tech Solutions").isEmpty());
     }
 
-    private static void returnsNoResultsForBlankSearch() {
-        JobService service = createService();
-
-        assertEquals(0, service.searchJobs("   ").size());
+    @Test
+    void returnsNoResultsForBlankSearch() {
+        assertTrue(createService().searchJobs("   ").isEmpty());
     }
 
-    private static void throwsForMissingJob() {
-        JobService service = createService();
-
-        JobID missingID = JobID.from(
-                "87b3effd-61da-4d18-ae1e-dd186ea283f7"
-        );
-
+    @Test
+    void throwsForMissingJob() {
         JobNotFoundException exception = assertThrows(
                 JobNotFoundException.class,
-                () -> service.getJobById(missingID)
+                () -> createService().getJobById(MISSING_JOB_ID)
         );
 
-        assertContains(
-                exception.getMessage(),
-                missingID.toString()
-        );
+        assertTrue(exception.getMessage().contains(MISSING_JOB_ID.toString()));
     }
 
     private static JobService createService() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
+        JobRepository repository = new InMemoryJobRepository();
         repository.save(createJob());
-
-        return new JobService(
-                repository,
-                new TitleSearchStrategy()
-        );
+        return new JobService(repository, new TitleSearchStrategy());
     }
 
     private static Job createJob() {

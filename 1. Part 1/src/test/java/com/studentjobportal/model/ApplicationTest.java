@@ -1,77 +1,97 @@
 package com.studentjobportal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.Instant;
 
-// test for application
-public final class ApplicationTest {
+import org.junit.jupiter.api.Test;
 
-    private static final String APPLICATION_ID = "fcfc1ba8-8788-4377-b397-994e0afe202b";
-    private static final String SECOND_APPLICATION_ID = "0a011f56-cc19-43ce-a677-98cb63982f78";
-    private static final String JOB_ID = "d61b9fa8-c23c-43af-b60c-3903512c8d01";
+/**
+ * Verifies the immutable state, validation and identity rules of
+ * {@link Application}.
+ */
+final class ApplicationTest {
 
-    public static void main(String[] args) {
-        applicationStoresRequiredInformation();
-        equalityUsesApplicationID();
-        toStringContainsAllFields();
-        System.out.println("All Application tests passed.");
-    }
+    private static final String APPLICATION_ID =
+            "fcfc1ba8-8788-4377-b397-994e0afe202b";
+    private static final String SECOND_APPLICATION_ID =
+            "0a011f56-cc19-43ce-a677-98cb63982f78";
+    private static final String JOB_ID =
+            "d61b9fa8-c23c-43af-b60c-3903512c8d01";
+    private static final Instant SUBMITTED_AT =
+            Instant.parse("2026-08-11T10:15:30Z");
 
-    private static void applicationStoresRequiredInformation() {
-        Instant submittedAt = Instant.parse("2026-08-11T10:15:30Z");
-        Application application = createApplication(APPLICATION_ID, submittedAt);
+    @Test
+    void builderStoresRequiredInformation() {
+        Application application = createApplication(APPLICATION_ID, SUBMITTED_AT);
 
         assertEquals(ApplicationID.from(APPLICATION_ID), application.getId());
         assertEquals(JobID.from(JOB_ID), application.getJobID());
         assertEquals(ApplicationStatus.SUBMITTED, application.getStatus());
-        assertEquals(submittedAt, application.getSubmittedAt());
+        assertEquals(SUBMITTED_AT, application.getSubmittedAt());
     }
 
-    private static void equalityUsesApplicationID() {
-        Instant firstTime = Instant.parse("2026-08-11T10:15:30Z");
-        Instant secondTime = Instant.parse("2026-08-12T10:15:30Z");
-        Application first = createApplication(APPLICATION_ID, firstTime);
-        Application sameId = createApplication(APPLICATION_ID, secondTime);
-        Application differentId = createApplication(SECOND_APPLICATION_ID, firstTime);
+    @Test
+    void builderRejectsMissingRequiredInformation() {
+        assertThrows(NullPointerException.class,
+                () -> validBuilder().id(null).build());
+        assertThrows(NullPointerException.class,
+                () -> validBuilder().JobID(null).build());
+        assertThrows(NullPointerException.class,
+                () -> validBuilder().status(null).build());
+        assertThrows(NullPointerException.class,
+                () -> validBuilder().submittedAt(null).build());
+    }
 
+    @Test
+    void equalityUsesApplicationId() {
+        Application first = createApplication(APPLICATION_ID, SUBMITTED_AT);
+        Application sameId = createApplication(
+                APPLICATION_ID,
+                SUBMITTED_AT.plusSeconds(60)
+        );
+        Application differentId = createApplication(
+                SECOND_APPLICATION_ID,
+                SUBMITTED_AT
+        );
+
+        // Non-identity fields do not affect the application's identity.
         assertEquals(first, sameId);
         assertEquals(first.hashCode(), sameId.hashCode());
         assertNotEquals(first, differentId);
+        assertNotEquals(null, first);
+        assertNotEquals("not an application", first);
     }
 
-    private static void toStringContainsAllFields() {
-        Application application = createApplication(APPLICATION_ID, Instant.parse("2026-08-11T10:15:30Z"));
-        String result = application.toString();
+    @Test
+    void toStringContainsAllFields() {
+        String result = createApplication(APPLICATION_ID, SUBMITTED_AT).toString();
 
-        assertContains(result, APPLICATION_ID);
-        assertContains(result, JOB_ID);
-        assertContains(result, "SUBMITTED");
-        assertContains(result, "2026-08-11T10:15:30Z");
+        assertTrue(result.contains(APPLICATION_ID));
+        assertTrue(result.contains(JOB_ID));
+        assertTrue(result.contains("SUBMITTED"));
+        assertTrue(result.contains(SUBMITTED_AT.toString()));
     }
 
-    private static Application createApplication(String APPLICATION_ID, Instant submittedAt) {
+    private static Application.Builder validBuilder() {
         return Application.builder()
-        .id(ApplicationID.from(APPLICATION_ID))
-        .JobID(JobID.from(JOB_ID))
-        .status(ApplicationStatus.SUBMITTED)
-        .submittedAt(submittedAt)
-        .build();
+                .id(ApplicationID.from(APPLICATION_ID))
+                .JobID(JobID.from(JOB_ID))
+                .status(ApplicationStatus.SUBMITTED)
+                .submittedAt(SUBMITTED_AT);
     }
 
-    private static void assertEquals(Object expected, Object actual) {
-        if (!expected.equals(actual)) {
-            throw new AssertionError("Expected <" + expected + "> but was <" + actual + ">");
-        }
-    }
-
-    private static void assertNotEquals(Object unexpected, Object actual) {
-        if (unexpected.equals(actual)) {
-            throw new AssertionError("Values should not be equal: " + actual);
-        }
-    }
-
-    private static void assertContains(String text, String expectedText) {
-        if (!text.contains(expectedText)) {
-            throw new AssertionError("Expected <" + text + "> to contain <" + expectedText + ">");
-        }
+    private static Application createApplication(
+            String applicationId,
+            Instant submittedAt) {
+        return Application.builder()
+                .id(ApplicationID.from(applicationId))
+                .JobID(JobID.from(JOB_ID))
+                .status(ApplicationStatus.SUBMITTED)
+                .submittedAt(submittedAt)
+                .build();
     }
 }

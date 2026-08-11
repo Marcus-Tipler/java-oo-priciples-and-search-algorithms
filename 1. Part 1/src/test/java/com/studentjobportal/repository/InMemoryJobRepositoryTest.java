@@ -1,91 +1,73 @@
 package com.studentjobportal.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import static com.studentjobportal.TestAssertions.assertEquals;
-import static com.studentjobportal.TestAssertions.assertFalse;
-import static com.studentjobportal.TestAssertions.assertThrows;
-import static com.studentjobportal.TestAssertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.studentjobportal.model.Job;
 import com.studentjobportal.model.JobID;
 
-public final class InMemoryJobRepositoryTest {
+/**
+ * Verifies the CRUD operations and defensive collection handling of the
+ * in-memory job repository.
+ */
+final class InMemoryJobRepositoryTest {
 
     private static final JobID JOB_ID = JobID.from(
             "d61b9fa8-c23c-43af-b60c-3903512c8d01"
     );
 
-    public static void main(String[] args) {
-        savesAndFindsAJob();
-        returnsEmptyForUnknownJob();
-        rejectsDuplicateJobIds();
-        returnsSafeCollections();
-        deletesAJob();
+    private JobRepository repository;
 
-        System.out.println(
-                "All InMemoryJobRepository tests passed."
-        );
+    @BeforeEach
+    void setUp() {
+        repository = new InMemoryJobRepository();
     }
 
-    private static void savesAndFindsAJob() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
+    @Test
+    void savesAndFindsAJob() {
         Job job = createJob();
+
         repository.save(job);
 
-        Job found = repository.findById(JOB_ID)
-                .orElseThrow(() ->
-                        new AssertionError("Job was not found")
-                );
-
-        assertEquals(job, found);
+        assertEquals(job, repository.findById(JOB_ID).orElseThrow());
         assertEquals(1, repository.findAll().size());
     }
 
-    private static void returnsEmptyForUnknownJob() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
-        assertFalse(repository.findById(JOB_ID).isPresent());
+    @Test
+    void returnsEmptyForUnknownJob() {
+        assertTrue(repository.findById(JOB_ID).isEmpty());
     }
 
-    private static void rejectsDuplicateJobIds() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
+    @Test
+    void rejectsDuplicateJobIds() {
         repository.save(createJob());
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> repository.save(createJob())
-        );
+        assertThrows(IllegalArgumentException.class,
+                () -> repository.save(createJob()));
     }
 
-    private static void returnsSafeCollections() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
+    @Test
+    void returnsAnUnmodifiableSnapshot() {
         repository.save(createJob());
-
         List<Job> returnedJobs = repository.findAll();
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                returnedJobs::clear
-        );
-
+        assertThrows(UnsupportedOperationException.class, returnedJobs::clear);
         assertEquals(1, repository.findAll().size());
     }
 
-    private static void deletesAJob() {
-        JobRepository repository =
-                new InMemoryJobRepository();
-
+    @Test
+    void deletesAJob() {
         repository.save(createJob());
 
         assertTrue(repository.deleteById(JOB_ID));
-        assertFalse(repository.findById(JOB_ID).isPresent());
+        assertTrue(repository.findById(JOB_ID).isEmpty());
         assertFalse(repository.deleteById(JOB_ID));
     }
 

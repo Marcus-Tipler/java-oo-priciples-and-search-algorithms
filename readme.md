@@ -7,9 +7,8 @@ java -cp bin com.studentjobportal.StudentJobPortal
 ```
 
 
-### Compile and Run program with TESTS (test-ability)
+### Run all tests (test-ability)
 ```zsh
-find src/main/java src/test/java -name '*.java' -print0 | xargs -0 javac -d bin
-java -cp bin com.studentjobportal.model.JobTest
+cd "1. Part 1"
+mvn test
 ```
-

@@ -1,96 +1,73 @@
 package com.studentjobportal.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Instant;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.studentjobportal.model.Application;
 import com.studentjobportal.model.ApplicationID;
 import com.studentjobportal.model.ApplicationStatus;
 import com.studentjobportal.model.JobID;
 
-import java.time.Instant;
-import java.util.List;
-
-import static com.studentjobportal.TestAssertions.assertEquals;
-import static com.studentjobportal.TestAssertions.assertFalse;
-import static com.studentjobportal.TestAssertions.assertThrows;
-import static com.studentjobportal.TestAssertions.assertTrue;
-
-public final class InMemoryApplicationRepositoryTest {
+/**
+ * Verifies application storage and the one-application-per-job constraint.
+ */
+final class InMemoryApplicationRepositoryTest {
 
     private static final JobID JOB_ID = JobID.from(
             "d61b9fa8-c23c-43af-b60c-3903512c8d01"
     );
 
-    public static void main(String[] args) {
-        savesAndFindsAnApplication();
-        returnsEmptyForUnknownJob();
-        preventsTwoApplicationsForTheSameJob();
-        returnsSafeCollections();
+    private ApplicationRepository repository;
 
-        System.out.println(
-                "All InMemoryApplicationRepository tests passed."
-        );
+    @BeforeEach
+    void setUp() {
+        // A fresh repository keeps every test independent of execution order.
+        repository = new InMemoryApplicationRepository();
     }
 
-    private static void savesAndFindsAnApplication() {
-        ApplicationRepository repository =
-                new InMemoryApplicationRepository();
-
+    @Test
+    void savesAndFindsAnApplication() {
         Application application = createApplication();
 
         assertTrue(repository.save(application));
-
-        Application found = repository.findByJobId(JOB_ID)
-                .orElseThrow(() ->
-                        new AssertionError(
-                                "Application was not found"
-                        )
-                );
-
-        assertEquals(application, found);
+        assertEquals(application, repository.findByJobId(JOB_ID).orElseThrow());
     }
 
-    private static void returnsEmptyForUnknownJob() {
-        ApplicationRepository repository =
-                new InMemoryApplicationRepository();
-
-        assertFalse(
-                repository.findByJobId(JOB_ID).isPresent()
-        );
+    @Test
+    void returnsEmptyForUnknownJob() {
+        assertTrue(repository.findByJobId(JOB_ID).isEmpty());
     }
 
-    private static void preventsTwoApplicationsForTheSameJob() {
-        ApplicationRepository repository =
-                new InMemoryApplicationRepository();
-
+    @Test
+    void preventsTwoApplicationsForTheSameJob() {
         assertTrue(repository.save(createApplication()));
         assertFalse(repository.save(createApplication()));
         assertEquals(1, repository.findAll().size());
     }
 
-    private static void returnsSafeCollections() {
-        ApplicationRepository repository =
-                new InMemoryApplicationRepository();
-
+    @Test
+    void returnsAnUnmodifiableSnapshot() {
         repository.save(createApplication());
+        List<Application> returnedApplications = repository.findAll();
 
-        List<Application> returnedApplications =
-                repository.findAll();
-
-        assertThrows(
-                UnsupportedOperationException.class,
-                returnedApplications::clear
-        );
-
+        assertThrows(UnsupportedOperationException.class, returnedApplications::clear);
         assertEquals(1, repository.findAll().size());
     }
 
     private static Application createApplication() {
         return Application.builder()
                 .id(ApplicationID.generate())
-                .jobId(JOB_ID)
+                .JobID(JOB_ID)
                 .status(ApplicationStatus.SUBMITTED)
-                .submittedAt(
-                        Instant.parse("2026-08-11T10:15:30Z")
-                )
+                .submittedAt(Instant.parse("2026-08-11T10:15:30Z"))
                 .build();
     }
 }
