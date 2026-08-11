@@ -11,7 +11,11 @@ import com.studentjobportal.repository.InMemoryJobRepository;
 import com.studentjobportal.repository.InMemorySavedJobRepository;
 import com.studentjobportal.repository.JobRepository;
 import com.studentjobportal.repository.SavedJobRepository;
-import com.studentjobportal.service.JobPortalService;
+import com.studentjobportal.search.CombinedKeywordSearchStrategy;
+import com.studentjobportal.search.JobSearchStrategy;
+import com.studentjobportal.service.ApplicationService;
+import com.studentjobportal.service.JobService;
+import com.studentjobportal.service.SavedJobService;
 
 // Starting point with little to no responsibility
 public final class StudentJobPortal {
@@ -31,16 +35,35 @@ public final class StudentJobPortal {
 
         SampleJobDataSeeder.seed(jobRepository);
 
-        JobPortalService service = new JobPortalService(
+        JobSearchStrategy searchStrategy =
+                new CombinedKeywordSearchStrategy();
+
+        JobService jobService = new JobService(
                 jobRepository,
-                savedJobRepository,
-                applicationRepository,
-                Clock.systemUTC()
+                searchStrategy
         );
+
+        SavedJobService savedJobService =
+                new SavedJobService(
+                        jobRepository,
+                        savedJobRepository
+                );
+
+        ApplicationService applicationService =
+                new ApplicationService(
+                        jobRepository,
+                        applicationRepository,
+                        Clock.systemUTC()
+                );
 
         try (Scanner scanner = new Scanner(System.in)) {
             StudentJobPortalCli cli =
-                    new StudentJobPortalCli(scanner, service);
+                    new StudentJobPortalCli(
+                            scanner,
+                            jobService,
+                            savedJobService,
+                            applicationService
+                    );
 
             cli.run();
         }

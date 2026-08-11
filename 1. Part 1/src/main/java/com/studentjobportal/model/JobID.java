@@ -3,6 +3,8 @@ package com.studentjobportal.model;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.studentjobportal.exception.JobValidationException;
+
 
 // Job identifier
 public final class JobID {
@@ -10,21 +12,26 @@ public final class JobID {
     private final UUID value;
 
     private JobID(UUID value) {
-        this.value = Objects.requireNonNull(value, "Job ID cannot be null");
+        this.value = Objects.requireNonNull(value);
     }
 
-    // Creates a new Job ID
     public static JobID generate() {
         return new JobID(UUID.randomUUID());
     }
 
-    // Properly create Job ID from string
     public static JobID from(String value) {
-        Objects.requireNonNull(value, "Job ID value cannot be null");
-        return new JobID(UUID.fromString(value));
+        if (value == null) {
+            throw new JobValidationException("Job ID value cannot be null");
+        }
+
+        try {
+            return new JobID(UUID.fromString(value));
+        } catch (IllegalArgumentException cause) {
+            throw new JobValidationException("Invalid job ID: " + value, cause);
+        }
     }
 
-    public UUID value() {
+    public UUID getValue() {
         return value;
     }
 
@@ -43,8 +50,8 @@ public final class JobID {
             return false;
         }
 
-        JobID otherJobID = (JobID) other;
-        return value.equals(otherJobID.value);
+        JobID otherID = (JobID) other;
+        return value.equals(otherID.value);
     }
 
     @Override

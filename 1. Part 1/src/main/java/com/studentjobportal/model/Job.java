@@ -1,6 +1,6 @@
 package com.studentjobportal.model;
 
-import java.util.Objects;
+import com.studentjobportal.exception.JobValidationException;
 
 // Immutable descriptions for jobs where 
 // equality is based on the immutable job ID. 
@@ -123,45 +123,29 @@ public final class Job {
         }
 
         public Job build() {
-            JobID validatedId =
-                    Objects.requireNonNull(id, "Job ID cannot be null");
-
-            String validatedTitle =
-                    requireText(title, "Job title");
-
-            String validatedCompany =
-                    requireText(company, "Company");
-
-            String validatedJobType =
-                    requireText(jobType, "Job type");
-
-            String validatedLocation =
-                    requireText(location, "Location");
+            if (id == null) {
+                throw new JobValidationException("Job ID cannot be null");
+            }
 
             return new Job(
-                    validatedId,
-                    validatedTitle,
-                    validatedCompany,
-                    validatedJobType,
-                    validatedLocation
+                id,
+                requireText(title, "Job title"),
+                requireText(company, "Company"),
+                requireText(jobType, "Job type"),
+                requireText(location, "Location")
             );
         }
 
-        private static String requireText(
-                String value,
-                String fieldName) {
+        private static String requireText(String value, String fieldName) {
 
-            Objects.requireNonNull(
-                    value,
-                    fieldName + " cannot be null"
-            );
+            if (value == null) {
+                throw new JobValidationException(fieldName + " cannot be null");
+            }
 
             String trimmedValue = value.trim();
 
             if (trimmedValue.isEmpty()) {
-                throw new IllegalArgumentException(
-                        fieldName + " cannot be blank"
-                );
+                throw new JobValidationException(fieldName + " cannot be blank");
             }
 
             return trimmedValue;

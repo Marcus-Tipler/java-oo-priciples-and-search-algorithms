@@ -51,11 +51,7 @@ public final class SavedJobService {
         List<Job> savedJobs = new ArrayList<>();
 
         for (JobID jobID : savedJobRepository.findAll()) {
-            Job job = jobRepository.findById(jobID)
-                    .orElseThrow(() ->
-                            new JobNotFoundException(jobID)
-                    );
-
+            Job job = jobRepository.findById(jobID).orElseThrow(() -> new JobNotFoundException(jobID));
             savedJobs.add(job);
         }
 
@@ -64,10 +60,6 @@ public final class SavedJobService {
 
     private Job requireExistingJob(JobID jobID) {
         Objects.requireNonNull(jobID, "Job ID cannot be null");
-
-        return jobRepository.findById(jobID)
-                .orElseThrow(() ->
-                        new JobNotFoundException(jobID)
-                );
+        return jobRepository.findById(jobID).orElseThrow(() -> new JobNotFoundException(jobID));
     }
 }
