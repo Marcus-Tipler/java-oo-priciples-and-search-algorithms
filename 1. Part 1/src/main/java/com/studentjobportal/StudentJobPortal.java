@@ -4,8 +4,11 @@ import java.time.Clock;
 import java.util.Scanner;
 
 import com.studentjobportal.cli.StudentJobPortalCli;
-import com.studentjobportal.data.SampleJobData;
+import com.studentjobportal.data.SampleJobDataSeeder;
 import com.studentjobportal.repository.ApplicationRepository;
+import com.studentjobportal.repository.InMemoryApplicationRepository;
+import com.studentjobportal.repository.InMemoryJobRepository;
+import com.studentjobportal.repository.InMemorySavedJobRepository;
 import com.studentjobportal.repository.JobRepository;
 import com.studentjobportal.repository.SavedJobRepository;
 import com.studentjobportal.service.JobPortalService;
@@ -17,13 +20,29 @@ public final class StudentJobPortal {
     }
 
     public static void main(String[] args) {
-        JobRepository jobRepository = new JobRepository(SampleJobData.createJobs());
-        SavedJobRepository savedJobRepository = new SavedJobRepository();
-        ApplicationRepository applicationRepository = new ApplicationRepository();
-        JobPortalService service = new JobPortalService(jobRepository, savedJobRepository, applicationRepository, Clock.systemUTC());
+        JobRepository jobRepository =
+                new InMemoryJobRepository();
+
+        SavedJobRepository savedJobRepository =
+                new InMemorySavedJobRepository();
+
+        ApplicationRepository applicationRepository =
+                new InMemoryApplicationRepository();
+
+        SampleJobDataSeeder.seed(jobRepository);
+
+        JobPortalService service = new JobPortalService(
+                jobRepository,
+                savedJobRepository,
+                applicationRepository,
+                Clock.systemUTC()
+        );
 
         try (Scanner scanner = new Scanner(System.in)) {
-            new StudentJobPortalCli(scanner, service).run();
+            StudentJobPortalCli cli =
+                    new StudentJobPortalCli(scanner, service);
+
+            cli.run();
         }
     }
 }

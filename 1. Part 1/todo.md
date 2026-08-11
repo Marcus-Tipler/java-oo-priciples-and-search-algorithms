@@ -2,44 +2,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
-## Phase 5 — Introduce repository abstractions
-
-Define what the program needs before deciding how it is stored.
-
-- [ ] Create a `JobRepository` interface.
-- [ ] Add operations such as:
-
-```text
-findAll
-findById
-save
-```
-
-- [ ] Create `SavedJobRepository`.
-- [ ] Create `ApplicationRepository`.
-- [ ] Implement accessible in-memory versions, for example:
-
-```text
-InMemoryJobRepository
-InMemorySavedJobRepository
-InMemoryApplicationRepository
-```
-
-- [ ] Store collections as `private final` fields inside repository implementations.
-- [ ] Return safe views or copies rather than exposing mutable internal collections.
-- [ ] Add repository tests.
-
-Avoid placing search business rules in the repository unless the repository contract explicitly owns querying.
-
-## Phase 6 — Move sample data into the data layer
-
-- [ ] Remove the hard-coded sample jobs from `main()`.
-- [ ] Create a data seeder or fixture class.
-- [ ] Construct the two initial jobs through the same validated creation mechanism used elsewhere.
-- [ ] Insert them through `JobRepository`.
-
-**Checkpoint:** `main()` no longer knows the details of the sample jobs.
-
 ## Phase 7 — Add the search Strategy pattern
 
 - [ ] Create a `JobSearchStrategy` interface.

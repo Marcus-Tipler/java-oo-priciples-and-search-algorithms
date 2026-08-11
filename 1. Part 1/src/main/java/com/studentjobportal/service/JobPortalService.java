@@ -60,7 +60,7 @@ public final class JobPortalService {
     public Application applyForJob(JobID JobID) {
         requireExistingJob(JobID);
 
-        if (applicationRepository.findByJobID(JobID).isPresent()) {throw new DuplicateApplicationException(JobID);}
+        if (applicationRepository.findByJobId(JobID).isPresent()) {throw new DuplicateApplicationException(JobID);}
 
         Application application = Application.builder()
                 .id(ApplicationID.generate())
