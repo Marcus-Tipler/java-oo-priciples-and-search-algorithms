@@ -3,28 +3,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 ## This document is made for Obsidian MD with the To-Do 
 
 
-## Phase 3 — Add controlled object creation
-
-- [ ] Introduce `Job.Builder` if demonstrating the Builder pattern supports the coursework.
-- [ ] Make builder calls readable, for example conceptually:
-
-```java
-Job.builder()
-    .id(...)
-    .title(...)
-    .company(...)
-    .jobType(...)
-    .location(...)
-    .build();
-```
-
-- [ ] Validate required fields in `build()`.
-- [ ] Reject null, blank or otherwise invalid values.
-- [ ] Prevent creation of partially valid `Job` objects.
-- [ ] Test successful construction and every important validation failure.
-
-One nuance: Builder solves construction readability and future field growth. The move from parallel lists to `Job` objects is what directly prevents list corruption.
-
 ## Phase 4 — Model saved jobs and applications properly
 
 - [ ] Remove `savedJobs` as a parallel `List<Boolean>`.

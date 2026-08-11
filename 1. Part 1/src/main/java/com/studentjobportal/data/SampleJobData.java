@@ -1,10 +1,10 @@
 package com.studentjobportal.data;
 
-import com.studentjobportal.model.Job;
-import com.studentjobportal.model.JobID;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.studentjobportal.model.Job;
+import com.studentjobportal.model.JobID;
 
 // Init demo job data
 public final class SampleJobData {
@@ -15,21 +15,25 @@ public final class SampleJobData {
     public static List<Job> createJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        jobs.add(new Job(
-                JobID.generate(),
-                "Java Developer",
-                "Tech Solutions Ltd",
-                "Graduate",
-                "Cheltenham"
-        ));
+        jobs.add(
+            Job.builder()
+            .id(JobID.generate())
+            .title("Java Developer")
+            .company("Tech Solutions Ltd")
+            .jobType("Graduate")
+            .location("Cheltenham")
+            .build()
+        );
 
-        jobs.add(new Job(
-                JobID.generate(),
-                "Software Tester",
-                "SecureApps UK",
-                "Placement",
-                "Bristol"
-        ));
+        jobs.add(
+            Job.builder()
+            .id(JobID.generate())
+            .title("Software Tester")
+            .company("SecureApps UK")
+            .jobType("Placement")
+            .location("Bristol")
+            .build()
+        );
 
         return jobs;
     }
