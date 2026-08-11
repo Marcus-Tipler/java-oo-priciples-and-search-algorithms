@@ -2,9 +2,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
-- [ ] Add model tests for equality, hashing and string representation.
-
-**Checkpoint:** Adding a new field cannot cause several lists to fall out of alignment.
 
 ## Phase 3 — Add controlled object creation
 
