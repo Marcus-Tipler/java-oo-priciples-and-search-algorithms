@@ -2,67 +2,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
-## Phase 7 — Add the search Strategy pattern
-
-- [ ] Create a `JobSearchStrategy` interface.
-- [ ] Implement individual strategies where useful:
-
-```text
-TitleSearchStrategy
-CompanySearchStrategy
-LocationSearchStrategy
-JobTypeSearchStrategy
-CombinedKeywordSearchStrategy
-```
-
-- [ ] Make searches case-insensitive.
-- [ ] Decide how blank search terms should behave.
-- [ ] Keep strategy implementations independent of console input/output.
-- [ ] Add focused tests for matches, non-matches, casing and blank input.
-
-The current code already searches title, company and location, despite the note saying it searches only titles. The real improvement is making that behaviour explicit, replaceable and independently testable.
-
-## Phase 8 — Add the service layer
-
-- [ ] Create a `JobService`.
-- [ ] Create a `SavedJobService`.
-- [ ] Create an `ApplicationService`.
-- [ ] Inject repositories and search strategies through constructors.
-- [ ] Move business operations into services:
-
-```text
-view all jobs
-search for jobs
-save a job
-view saved jobs
-apply for a job
-view applications
-```
-
-- [ ] Keep services independent of `Scanner` and `System.out`.
-- [ ] Add service tests using in-memory repositories or test doubles.
-
-A service should return results or throw a meaningful exception; it should not display menu messages.
-
-## Phase 9 — Make errors traceable
-
-- [ ] Create specific exceptions where they improve clarity, such as:
-
-```text
-JobNotFoundException
-JobValidationException
-DuplicateSavedJobException
-DuplicateApplicationException
-```
-
-- [ ] Include useful context in messages, especially the relevant job ID.
-- [ ] Preserve original causes when translating lower-level exceptions.
-- [ ] Avoid broad `catch (Exception)` blocks.
-- [ ] Handle expected user mistakes near the CLI boundary.
-- [ ] Allow unexpected programming faults to remain visible during development.
-- [ ] Add tests for service failure paths.
-
-“Traceable” does not mean catching everything. It means failures retain enough context to locate their source.
 
 ## Phase 10 — Extract the command-line interface
 
