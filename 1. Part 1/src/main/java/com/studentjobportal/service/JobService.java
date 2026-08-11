@@ -18,19 +18,9 @@ public final class JobService {
     private final JobRepository jobRepository;
     private final JobSearchStrategy searchStrategy;
 
-    public JobService(
-            JobRepository jobRepository,
-            JobSearchStrategy searchStrategy) {
-
-        this.jobRepository = Objects.requireNonNull(
-                jobRepository,
-                "Job repository cannot be null"
-        );
-
-        this.searchStrategy = Objects.requireNonNull(
-                searchStrategy,
-                "Search strategy cannot be null"
-        );
+    public JobService(JobRepository jobRepository, JobSearchStrategy searchStrategy) {
+        this.jobRepository = Objects.requireNonNull(jobRepository, "Job repository cannot be null");
+        this.searchStrategy = Objects.requireNonNull(searchStrategy, "Search strategy cannot be null");
     }
 
     public List<Job> getAllJobs() {
@@ -39,11 +29,7 @@ public final class JobService {
 
     public Job getJobById(JobID jobID) {
         Objects.requireNonNull(jobID, "Job ID cannot be null");
-
-        return jobRepository.findById(jobID)
-                .orElseThrow(() ->
-                        new JobNotFoundException(jobID)
-                );
+        return jobRepository.findById(jobID).orElseThrow(() -> new JobNotFoundException(jobID));
     }
 
     public List<Job> searchJobs(String searchTerm) {

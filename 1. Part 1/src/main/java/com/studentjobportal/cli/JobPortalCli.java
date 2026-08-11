@@ -85,9 +85,7 @@ public final class JobPortalCli {
                     running = false;
                     break;
                 default:
-                    throw new IllegalStateException(
-                            "Unexpected menu option: " + choice
-                    );
+                    throw new IllegalStateException("Unexpected menu option: " + choice);
             }
         }
     }
@@ -219,7 +217,6 @@ public final class JobPortalCli {
         }
 
         output.print(prompt);
-
         String inputLine = readLine();
 
         if (inputLine == null) {

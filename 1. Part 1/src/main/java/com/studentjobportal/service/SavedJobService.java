@@ -1,16 +1,16 @@
 package com.studentjobportal.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import com.studentjobportal.exception.DuplicateSavedJobException;
 import com.studentjobportal.exception.JobNotFoundException;
 import com.studentjobportal.model.Job;
 import com.studentjobportal.model.JobID;
 import com.studentjobportal.repository.JobRepository;
 import com.studentjobportal.repository.SavedJobRepository;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 
 // allows for saving job without duplicates, reject new actions on non-existent job
@@ -19,19 +19,9 @@ public final class SavedJobService {
     private final JobRepository jobRepository;
     private final SavedJobRepository savedJobRepository;
 
-    public SavedJobService(
-            JobRepository jobRepository,
-            SavedJobRepository savedJobRepository) {
-
-        this.jobRepository = Objects.requireNonNull(
-                jobRepository,
-                "Job repository cannot be null"
-        );
-
-        this.savedJobRepository = Objects.requireNonNull(
-                savedJobRepository,
-                "Saved-job repository cannot be null"
-        );
+    public SavedJobService(JobRepository jobRepository, SavedJobRepository savedJobRepository) {
+        this.jobRepository = Objects.requireNonNull(jobRepository, "Job repository cannot be null");
+        this.savedJobRepository = Objects.requireNonNull(savedJobRepository, "Saved-job repository cannot be null");
     }
 
     public void saveJob(JobID jobID) {

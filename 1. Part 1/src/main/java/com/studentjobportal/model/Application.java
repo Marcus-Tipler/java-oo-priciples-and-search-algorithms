@@ -101,22 +101,10 @@ public final class Application {
 
         public Application build() {
             return new Application(
-                Objects.requireNonNull(
-                        id,
-                        "Application ID cannot be null"
-                ),
-                Objects.requireNonNull(
-                        JobID,
-                        "Job ID cannot be null"
-                ),
-                Objects.requireNonNull(
-                        status,
-                        "Application status cannot be null"
-                ),
-                Objects.requireNonNull(
-                        submittedAt,
-                        "Submission time cannot be null"
-                )
+                Objects.requireNonNull(id, "Application ID cannot be null"),
+                Objects.requireNonNull(JobID, "Job ID cannot be null"),
+                Objects.requireNonNull(status, "Application status cannot be null"),
+                Objects.requireNonNull(submittedAt, "Submission time cannot be null")
             );
         }
     }

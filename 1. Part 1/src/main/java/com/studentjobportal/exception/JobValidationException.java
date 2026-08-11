@@ -9,9 +9,8 @@ public final class JobValidationException
     }
 
     public JobValidationException(
-            String message,
-            Throwable cause) {
-
+        String message,
+        Throwable cause) {
         super(message, cause);
     }
 }

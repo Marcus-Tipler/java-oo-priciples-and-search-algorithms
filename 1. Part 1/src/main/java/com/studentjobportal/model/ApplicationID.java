@@ -9,10 +9,7 @@ public final class ApplicationID {
     private final UUID value;
 
     private ApplicationID(UUID value) {
-        this.value = Objects.requireNonNull(
-            value,
-            "Application ID cannot be null"
-        );
+        this.value = Objects.requireNonNull(value, "Application ID cannot be null");
     }
 
     public static ApplicationID generate() {
@@ -20,11 +17,7 @@ public final class ApplicationID {
     }
 
     public static ApplicationID from(String value) {
-        Objects.requireNonNull(
-            value,
-            "Application ID value cannot be null"
-        );
-
+        Objects.requireNonNull(value, "Application ID value cannot be null");
         return new ApplicationID(UUID.fromString(value));
     }
 

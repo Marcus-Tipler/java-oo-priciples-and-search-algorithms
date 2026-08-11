@@ -1,13 +1,14 @@
 package com.studentjobportal.search;
 
-import com.studentjobportal.exception.JobValidationException;
-
 import java.util.Locale;
 import java.util.Objects;
+
+import com.studentjobportal.exception.JobValidationException;
 
 final class SearchSupport {
 
     private SearchSupport() {
+        
     }
 
     static boolean contains(JobFieldAccessor fieldAccessor, com.studentjobportal.model.Job job, String searchTerm) {

@@ -18,7 +18,7 @@ import com.studentjobportal.repository.JobRepository;
 import com.studentjobportal.repository.SavedJobRepository;
 
 
-// allows for saving or applying to job without duplicates, reject new actions on non-existent job, and 
+// Allows for saving or applying to job without duplicates, reject new actions on non-existent job, and 
 // preserves existing applications as historical records when jobs are removed.
 public final class JobPortalService {
 
@@ -63,11 +63,11 @@ public final class JobPortalService {
         if (applicationRepository.findByJobId(JobID).isPresent()) {throw new DuplicateApplicationException(JobID);}
 
         Application application = Application.builder()
-                .id(ApplicationID.generate())
-                .JobID(JobID)
-                .status(ApplicationStatus.SUBMITTED)
-                .submittedAt(Instant.now(clock))
-                .build();
+            .id(ApplicationID.generate())
+            .JobID(JobID)
+            .status(ApplicationStatus.SUBMITTED)
+            .submittedAt(Instant.now(clock))
+            .build();
 
         if (!applicationRepository.save(application)) {throw new DuplicateApplicationException(JobID);}
 
@@ -80,8 +80,6 @@ public final class JobPortalService {
 
     private Job requireExistingJob(JobID JobID) {
         Objects.requireNonNull(JobID, "Job ID cannot be null");
-
-        return jobRepository.findById(JobID)
-                .orElseThrow(() -> new JobNotFoundException(JobID));
+        return jobRepository.findById(JobID).orElseThrow(() -> new JobNotFoundException(JobID));
     }
 }

@@ -12,18 +12,12 @@ import com.studentjobportal.model.Application;
 import com.studentjobportal.model.JobID;
 
 // Stores 1 application per job in memory
-public final class InMemoryApplicationRepository
-        implements ApplicationRepository {
+public final class InMemoryApplicationRepository implements ApplicationRepository {
 
-    private final Map<JobID, Application> applicationsByJobId =
-            new LinkedHashMap<>();
+    private final Map<JobID, Application> applicationsByJobId = new LinkedHashMap<>();
 
     @Override
-    public boolean save(Application application) {
-        Objects.requireNonNull(
-                application,
-                "Application cannot be null"
-        );
+    public boolean save(Application application) {Objects.requireNonNull(application, "Application cannot be null");
 
         JobID jobId = application.getJobID();
 
@@ -38,16 +32,11 @@ public final class InMemoryApplicationRepository
     @Override
     public Optional<Application> findByJobId(JobID jobId) {
         Objects.requireNonNull(jobId, "Job ID cannot be null");
-
-        return Optional.ofNullable(
-                applicationsByJobId.get(jobId)
-        );
+        return Optional.ofNullable(applicationsByJobId.get(jobId));
     }
 
     @Override
     public List<Application> findAll() {
-        return Collections.unmodifiableList(
-                new ArrayList<>(applicationsByJobId.values())
-        );
+        return Collections.unmodifiableList(new ArrayList<>(applicationsByJobId.values()));
     }
 }

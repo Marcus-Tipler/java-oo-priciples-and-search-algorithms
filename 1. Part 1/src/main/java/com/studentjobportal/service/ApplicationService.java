@@ -15,7 +15,7 @@ import com.studentjobportal.repository.ApplicationRepository;
 import com.studentjobportal.repository.JobRepository;
 
 
-// allows for applying to one job without duplicates, application stays if job gets removed
+// Allows for applying to one job without duplicates, application stays if job gets removed.
 public final class ApplicationService {
 
     private final JobRepository jobRepository;
@@ -36,11 +36,11 @@ public final class ApplicationService {
         }
 
         Application application = Application.builder()
-        .id(ApplicationID.generate())
-        .JobID(jobID) // FIXME: causes error pls relink
-        .status(ApplicationStatus.SUBMITTED)
-        .submittedAt(Instant.now(clock))
-        .build();
+            .id(ApplicationID.generate())
+            .JobID(jobID)
+            .status(ApplicationStatus.SUBMITTED)
+            .submittedAt(Instant.now(clock))
+            .build();
 
         if (!applicationRepository.save(application)) {
             throw new DuplicateApplicationException(jobID);

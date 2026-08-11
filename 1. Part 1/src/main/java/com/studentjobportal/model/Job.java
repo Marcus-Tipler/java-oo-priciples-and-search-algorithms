@@ -16,11 +16,11 @@ public final class Job {
 
     // single list for job access
     private Job(
-            JobID id,
-            String title,
-            String company,
-            String jobType,
-            String location) {
+        JobID id,
+        String title,
+        String company,
+        String jobType,
+        String location) {
 
         this.id = id;
         this.title = title;
@@ -56,13 +56,12 @@ public final class Job {
 
     @Override
     public String toString() {
-        return "Job{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", company='" + company + '\'' +
-                ", jobType='" + jobType + '\'' +
-                ", location='" + location + '\'' +
-                '}';
+        return "Job{" + "id=" + id +
+        ", title='" + title + '\'' +
+        ", company='" + company + '\'' +
+        ", jobType='" + jobType + '\'' +
+        ", location='" + location + '\'' +
+        '}';
     }
 
     @Override
