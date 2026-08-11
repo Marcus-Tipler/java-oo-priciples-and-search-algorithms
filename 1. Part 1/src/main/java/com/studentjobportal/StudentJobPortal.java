@@ -3,7 +3,7 @@ package com.studentjobportal;
 import java.time.Clock;
 import java.util.Scanner;
 
-import com.studentjobportal.cli.StudentJobPortalCli;
+import com.studentjobportal.cli.JobPortalCli;
 import com.studentjobportal.data.SampleJobDataSeeder;
 import com.studentjobportal.repository.ApplicationRepository;
 import com.studentjobportal.repository.InMemoryApplicationRepository;
@@ -23,48 +23,20 @@ public final class StudentJobPortal {
     private StudentJobPortal() {
     }
 
-    public static void main(String[] args) {
-        JobRepository jobRepository =
-                new InMemoryJobRepository();
-
-        SavedJobRepository savedJobRepository =
-                new InMemorySavedJobRepository();
-
-        ApplicationRepository applicationRepository =
-                new InMemoryApplicationRepository();
+    public static void main(String[] args) { 
+        JobRepository jobRepository = new InMemoryJobRepository();
+        SavedJobRepository savedJobRepository = new InMemorySavedJobRepository();
+        ApplicationRepository applicationRepository = new InMemoryApplicationRepository();
 
         SampleJobDataSeeder.seed(jobRepository);
 
-        JobSearchStrategy searchStrategy =
-                new CombinedKeywordSearchStrategy();
-
-        JobService jobService = new JobService(
-                jobRepository,
-                searchStrategy
-        );
-
-        SavedJobService savedJobService =
-                new SavedJobService(
-                        jobRepository,
-                        savedJobRepository
-                );
-
-        ApplicationService applicationService =
-                new ApplicationService(
-                        jobRepository,
-                        applicationRepository,
-                        Clock.systemUTC()
-                );
+        JobSearchStrategy searchStrategy = new CombinedKeywordSearchStrategy();
+        JobService jobService = new JobService(jobRepository, searchStrategy);
+        SavedJobService savedJobService = new SavedJobService(jobRepository, savedJobRepository);
+        ApplicationService applicationService = new ApplicationService(jobRepository, applicationRepository, Clock.systemUTC());
 
         try (Scanner scanner = new Scanner(System.in)) {
-            StudentJobPortalCli cli =
-                    new StudentJobPortalCli(
-                            scanner,
-                            jobService,
-                            savedJobService,
-                            applicationService
-                    );
-
+            JobPortalCli cli = new JobPortalCli(scanner, System.out, jobService, savedJobService, applicationService);
             cli.run();
         }
     }

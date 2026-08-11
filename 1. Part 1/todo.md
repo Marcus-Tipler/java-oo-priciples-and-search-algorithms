@@ -2,6 +2,7 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
+- [ ] Fix visual display bug of what looks to be JSON displayed in saved jobs lists, or applied to jobs lists
 
 ## Phase 10 — Extract the command-line interface
 
