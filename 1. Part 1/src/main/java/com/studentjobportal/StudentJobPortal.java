@@ -1,10 +1,14 @@
 package com.studentjobportal;
 
+import java.time.Clock;
+import java.util.Scanner;
+
 import com.studentjobportal.cli.StudentJobPortalCli;
 import com.studentjobportal.data.SampleJobData;
-import com.studentjobportal.model.Job;
-import java.util.List;
-import java.util.Scanner;
+import com.studentjobportal.repository.ApplicationRepository;
+import com.studentjobportal.repository.JobRepository;
+import com.studentjobportal.repository.SavedJobRepository;
+import com.studentjobportal.service.JobPortalService;
 
 // Starting point with little to no responsibility
 public final class StudentJobPortal {
@@ -13,13 +17,13 @@ public final class StudentJobPortal {
     }
 
     public static void main(String[] args) {
-        List<Job> jobs = SampleJobData.createJobs();
+        JobRepository jobRepository = new JobRepository(SampleJobData.createJobs());
+        SavedJobRepository savedJobRepository = new SavedJobRepository();
+        ApplicationRepository applicationRepository = new ApplicationRepository();
+        JobPortalService service = new JobPortalService(jobRepository, savedJobRepository, applicationRepository, Clock.systemUTC());
 
         try (Scanner scanner = new Scanner(System.in)) {
-            StudentJobPortalCli application =
-                    new StudentJobPortalCli(scanner, jobs);
-
-            application.run();
+            new StudentJobPortalCli(scanner, service).run();
         }
     }
 }

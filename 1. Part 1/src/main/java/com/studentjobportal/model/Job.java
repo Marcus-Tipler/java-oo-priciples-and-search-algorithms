@@ -3,8 +3,8 @@ package com.studentjobportal.model;
 import java.util.Objects;
 
 // Immutable descriptions for jobs where 
-// equality is based on the immutable job ID.
-// Jobs now created through builder
+// equality is based on the immutable job ID. 
+// Jobs now created through builder (maintain-ability)
 public final class Job {
 
     // private final fields instead of public static.

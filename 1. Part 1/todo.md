@@ -2,20 +2,6 @@ Part 1 - Student Job Application maintainability, test-ability and extend-abilit
 
 ## This document is made for Obsidian MD with the To-Do 
 
-
-## Phase 4 — Model saved jobs and applications properly
-
-- [ ] Remove `savedJobs` as a parallel `List<Boolean>`.
-- [ ] Represent saved jobs using job IDs, such as a repository-backed `Set<JobId>`.
-- [ ] Create an `Application` domain class if applications need to be viewed.
-- [ ] Give each application enough information to identify the job and its status or submission time.
-- [ ] Implement `toString()`, `equals()` and `hashCode()` for `Application`.
-- [ ] Decide and document behaviours such as:
-
-  - Can the same job be saved twice?
-  - Can the same job be applied for twice?
-  - What happens if a referenced job no longer exists?
-
 ## Phase 5 — Introduce repository abstractions
 
 Define what the program needs before deciding how it is stored.

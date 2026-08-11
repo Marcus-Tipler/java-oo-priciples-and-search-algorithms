@@ -1,29 +1,24 @@
 package com.studentjobportal.cli;
 
-import com.studentjobportal.model.Job;
-import com.studentjobportal.model.JobID;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.Set;
+
+import com.studentjobportal.exception.DuplicateApplicationException;
+import com.studentjobportal.model.Application;
+import com.studentjobportal.model.Job;
+import com.studentjobportal.service.JobPortalService;
 
 // CLI user interaction
 public final class StudentJobPortalCli {
 
     private final Scanner scanner;
-    private final List<Job> jobs;
-    private final Set<JobID> savedJobIds;
+    private final JobPortalService service;
 
-    public StudentJobPortalCli(Scanner scanner, List<Job> jobs) {
+    public StudentJobPortalCli(Scanner scanner, JobPortalService service) {
         this.scanner = Objects.requireNonNull(scanner, "Scanner cannot be null");
-        this.jobs = new ArrayList<>(
-                Objects.requireNonNull(jobs, "Jobs cannot be null")
-        );
-        this.savedJobIds = new HashSet<>();
+        this.service = Objects.requireNonNull(service, "Service cannot be null");
     }
 
     public void run() {
@@ -46,9 +41,15 @@ public final class StudentJobPortalCli {
                     saveJob();
                     break;
                 case 4:
-                    applyForJob();
+                    viewSavedJobs();
                     break;
                 case 5:
+                    applyForJob();
+                    break;
+                case 6:
+                    viewApplications();
+                    break;
+                case 7:
                     running = false;
                     break;
                 default:
@@ -62,12 +63,16 @@ public final class StudentJobPortalCli {
         System.out.println("1. View Jobs");
         System.out.println("2. Search Jobs");
         System.out.println("3. Save Job");
-        System.out.println("4. Apply for Job");
-        System.out.println("5. Exit");
+        System.out.println("4. View Saved Jobs");
+        System.out.println("5. Apply for Job");
+        System.out.println("6. View Applications");
+        System.out.println("7. Exit");
         System.out.print("Select option: ");
     }
 
     private void viewJobs() {
+        List<Job> jobs = service.getAllJobs();
+
         for (int index = 0; index < jobs.size(); index++) {
             printJob(index, jobs.get(index));
         }
@@ -75,10 +80,10 @@ public final class StudentJobPortalCli {
 
     private void searchJobs() {
         System.out.print("Enter keyword: ");
-        String keyword = scanner.nextLine()
-                .trim()
-                .toLowerCase(Locale.ROOT);
 
+        String keyword = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+
+        List<Job> jobs = service.getAllJobs();
         boolean matchFound = false;
 
         for (int index = 0; index < jobs.size(); index++) {
@@ -97,47 +102,76 @@ public final class StudentJobPortalCli {
 
     private boolean matches(Job job, String keyword) {
         return job.getTitle().toLowerCase(Locale.ROOT).contains(keyword)
-                || job.getCompany().toLowerCase(Locale.ROOT).contains(keyword)
-                || job.getJobType().toLowerCase(Locale.ROOT).contains(keyword)
-                || job.getLocation().toLowerCase(Locale.ROOT).contains(keyword);
+        || job.getCompany().toLowerCase(Locale.ROOT).contains(keyword)
+        || job.getJobType().toLowerCase(Locale.ROOT).contains(keyword)
+        || job.getLocation().toLowerCase(Locale.ROOT).contains(keyword);
     }
 
     private void saveJob() {
-        System.out.print("Enter job number to save: ");
-        int index = scanner.nextInt() - 1;
-        scanner.nextLine();
+        Job job = selectJob("Enter job number to save: ");
 
-        Job job = findJobByIndex(index);
         if (job == null) {
-            System.out.println("Invalid job number.");
             return;
         }
 
-        if (savedJobIds.add(job.getId())) {
+        if (service.saveJob(job.getId())) {
             System.out.println("Job saved.");
         } else {
             System.out.println("Job is already saved.");
         }
     }
 
-    private void applyForJob() {
-        System.out.print("Enter job number to apply for: ");
-        int index = scanner.nextInt() - 1;
-        scanner.nextLine();
+    private void viewSavedJobs() {
+        List<Job> savedJobs = service.getSavedJobs();
 
-        Job job = findJobByIndex(index);
-        if (job == null) {
-            System.out.println("Invalid job number.");
+        if (savedJobs.isEmpty()) {
+            System.out.println("No saved jobs.");
             return;
         }
 
-        System.out.println(
-                "Application submitted for " + job.getTitle()
-        );
+        for (Job job : savedJobs) {
+            System.out.println(job);
+        }
     }
 
-    private Job findJobByIndex(int index) {
+    private void applyForJob() {
+        Job job = selectJob("Enter job number to apply for: ");
+
+        if (job == null) {
+            return;
+        }
+
+        try {
+            service.applyForJob(job.getId());
+            System.out.println("Application submitted for " + job.getTitle());
+        } catch (DuplicateApplicationException exception) {
+            System.out.println("You have already applied for this job.");
+        }
+    }
+
+    private void viewApplications() {
+        List<Application> applications = service.getApplications();
+
+        if (applications.isEmpty()) {
+            System.out.println("No applications.");
+            return;
+        }
+
+        for (Application application : applications) {
+            System.out.println(application);
+        }
+    }
+
+    private Job selectJob(String prompt) {
+        System.out.print(prompt);
+
+        int index = scanner.nextInt() - 1;
+        scanner.nextLine();
+
+        List<Job> jobs = service.getAllJobs();
+
         if (index < 0 || index >= jobs.size()) {
+            System.out.println("Invalid job number.");
             return null;
         }
 
@@ -145,17 +179,7 @@ public final class StudentJobPortalCli {
     }
 
     private void printJob(int index, Job job) {
-        String savedMarker = savedJobIds.contains(job.getId())
-                ? " | Saved"
-                : "";
-
-        System.out.println(
-                (index + 1) + ". "
-                        + job.getTitle() + " | "
-                        + job.getCompany() + " | "
-                        + job.getJobType() + " | "
-                        + job.getLocation()
-                        + savedMarker
-        );
+        String savedMarker = service.isSaved(job.getId()) ? " | Saved" : "";
+        System.out.println((index + 1) + ". " + job.getTitle() + " | " + job.getCompany() + " | " + job.getJobType() + " | " + job.getLocation() + savedMarker);
     }
 }
