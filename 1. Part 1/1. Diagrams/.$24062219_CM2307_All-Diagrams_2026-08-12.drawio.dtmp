@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2026-08-12T21:42:35.355Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="9_bFJHLsCn4HIiymnw13" version="21.6.8" type="device" pages="3">
+<mxfile host="Electron" modified="2026-08-12T21:48:04.283Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="SeKyG4qRTje0SPJHsSIm" version="21.6.8" type="device" pages="3">
   <diagram name="UC Diagram" id="bDbWYYItGOSMcUoagK6O">
     <mxGraphModel dx="1578" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -114,8 +114,8 @@
         <mxCell id="kQM4ADBndawCsdo8toDq-22" value="&lt;font color=&quot;#18141d&quot;&gt;&amp;lt;&amp;lt;include&amp;gt;&amp;gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="420" y="130" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="kQM4ADBndawCsdo8toDq-24" value="&lt;font color=&quot;#000000&quot;&gt;&lt;b&gt;&lt;u&gt;StudentJobPortal Application&lt;/u&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="293.75" y="100" width="182.5" height="30" as="geometry" />
+        <mxCell id="kQM4ADBndawCsdo8toDq-24" value="&lt;font size=&quot;1&quot; color=&quot;#000000&quot;&gt;&lt;b&gt;&lt;u style=&quot;font-size: 14px;&quot;&gt;StudentJobPortal Application&lt;/u&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="100" width="330" height="30" as="geometry" />
         </mxCell>
         <mxCell id="kQM4ADBndawCsdo8toDq-25" value="&lt;font color=&quot;#18141d&quot;&gt;Appropriate Exception Handling&lt;br&gt;&quot;DuplicateSavedJobException&quot;&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAB308;" vertex="1" parent="1">
           <mxGeometry x="590" y="350" width="200" height="60" as="geometry" />
@@ -145,10 +145,13 @@
     </mxGraphModel>
   </diagram>
   <diagram id="_xgYF-k-do0h7tclqUcp" name="Class Diagram">
-    <mxGraphModel dx="2265" dy="1649" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2680" dy="1927" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="7Q3nE72oR6siSjXFF8-K-113" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAF8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="-80" width="1320" height="980" as="geometry" />
+        </mxCell>
         <mxCell id="7Q3nE72oR6siSjXFF8-K-112" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DC2626;" vertex="1" parent="1">
           <mxGeometry x="60" y="620" width="920" height="260" as="geometry" />
         </mxCell>
@@ -461,9 +464,6 @@
         <mxCell id="7Q3nE72oR6siSjXFF8-K-111" value="&lt;font color=&quot;#18141d&quot;&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="730" y="670" width="220" height="12.5" as="geometry" />
         </mxCell>
-        <mxCell id="7Q3nE72oR6siSjXFF8-K-113" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAF8;" vertex="1" parent="1">
-          <mxGeometry x="980" y="620" width="360" height="260" as="geometry" />
-        </mxCell>
         <mxCell id="7Q3nE72oR6siSjXFF8-K-116" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAF8;strokeColor=#18141D;" vertex="1" parent="1">
           <mxGeometry x="80" y="810" width="240" height="50" as="geometry" />
         </mxCell>
@@ -539,6 +539,9 @@
             <mxPoint x="839.5" y="770" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="adVV49lgrB6uaOtsqLq0-2" value="&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;&lt;u&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;StudentJobPortal Application&lt;/font&gt;&lt;/u&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="-80" width="1300" height="30" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -548,7 +551,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="CC69xl2OX8GMqgzq2I2H-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAF8;" vertex="1" parent="1">
-          <mxGeometry y="260" width="1740" height="470" as="geometry" />
+          <mxGeometry y="240" width="1740" height="490" as="geometry" />
         </mxCell>
         <mxCell id="EXN1nKmEXdIY1FcFsBMO-112" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F97316;strokeColor=#18141D;" vertex="1" parent="1">
           <mxGeometry x="80" y="280" width="240" height="50" as="geometry" />
@@ -780,6 +783,9 @@
         </mxCell>
         <mxCell id="CC69xl2OX8GMqgzq2I2H-44" value="&lt;font color=&quot;#18141d&quot;&gt;14. Show success&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="40" y="636.5" width="150" height="12.5" as="geometry" />
+        </mxCell>
+        <mxCell id="yOYSX_luhRSlr0Zee3BX-1" value="&lt;b style=&quot;border-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;u style=&quot;border-color: rgb(0, 0, 0);&quot;&gt;StudentJobPortal Application&lt;/u&gt;&lt;/b&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="10" y="240" width="1720" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
