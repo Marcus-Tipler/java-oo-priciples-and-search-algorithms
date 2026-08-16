@@ -7,7 +7,7 @@ import java.util.List;
 // keeping searches but adding module code lookup
 public class ModuleCatalogue {
     // again, added final here, not likely to change
-    private final List<OptionalModule> modules = new ArrayList<>();
+    private final List<OptionalModule> modules;
 
     public ModuleCatalogue() {
         this.modules = new ArrayList<>();
