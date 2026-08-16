@@ -2,6 +2,9 @@ package benchmark;
 
 import catalogue.ModuleCatalogue;
 import catalogue.OptionalModule;
+import catalogue.search.KeywordSearchAlgorithm;
+import catalogue.search.LinearKeywordSearch;
+import catalogue.search.SecondKeywordSearchPlaceholder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Standalone benchmark test. It deliberately avoids machine-dependent timing assertions.
@@ -20,23 +26,51 @@ public final class ModuleCatalogueBenchmarkTest {
     private static final int DEFAULT_MEASURED_ITERATIONS = 10;
 
     private final Path dataDirectory;
+    private final List<KeywordSearchAlgorithm> algorithms;
     private final CsvModuleLoader loader = new CsvModuleLoader();
     private final ModuleBenchmark benchmark = new ModuleBenchmark();
 
-    private ModuleCatalogueBenchmarkTest(Path dataDirectory) {
+    private ModuleCatalogueBenchmarkTest(
+            Path dataDirectory,
+            List<KeywordSearchAlgorithm> algorithms) {
         this.dataDirectory = dataDirectory;
+        this.algorithms = algorithms;
     }
 
     public static void main(String[] args) throws IOException {
+        if (args.length == 1 && ("--help".equals(args[0]) || "-h".equals(args[0]))) {
+            printUsage();
+            return;
+        }
+
+        List<KeywordSearchAlgorithm> algorithms;
+        try {
+            algorithms = selectAlgorithms(args);
+        } catch (IllegalArgumentException exception) {
+            System.err.println("Error: " + exception.getMessage());
+            printUsage();
+            System.exit(2);
+            return;
+        }
+
         Path dataDirectory = Paths.get(
                 System.getProperty("benchmark.dataDirectory", "samples"));
-        ModuleCatalogueBenchmarkTest test = new ModuleCatalogueBenchmarkTest(dataDirectory);
+        ModuleCatalogueBenchmarkTest test = new ModuleCatalogueBenchmarkTest(
+                dataDirectory, algorithms);
 
         test.datasetsContainIdenticalModules();
         System.out.println("Dataset content check: PASS");
         System.out.println("========================================");
         System.out.println("MODULE SEARCH BENCHMARK");
         System.out.println("========================================");
+        System.out.println("Selected: " + selectedNames(algorithms));
+
+        for (KeywordSearchAlgorithm algorithm : algorithms) {
+            if (algorithm.isPlaceholder()) {
+                System.out.println(
+                        "WARNING: 'second' is a placeholder and currently delegates to linear search.");
+            }
+        }
 
         test.benchmarkOrderedDataset();
         test.benchmarkRandomDataset();
@@ -69,16 +103,19 @@ public final class ModuleCatalogueBenchmarkTest {
         ModuleCatalogue catalogue = loader.load(dataDirectory.resolve(fileName));
         verifyKeywordSearch(catalogue);
 
-        BenchmarkResult result = benchmark.benchmarkKeywordSearch(
-                catalogue,
-                dataset,
-                KEYWORD,
-                integerProperty("benchmark.warmUpIterations", DEFAULT_WARM_UP_ITERATIONS),
-                integerProperty("benchmark.iterations", DEFAULT_MEASURED_ITERATIONS));
+        for (KeywordSearchAlgorithm algorithm : algorithms) {
+            BenchmarkResult result = benchmark.benchmarkKeywordSearch(
+                    catalogue,
+                    algorithm,
+                    dataset,
+                    KEYWORD,
+                    integerProperty("benchmark.warmUpIterations", DEFAULT_WARM_UP_ITERATIONS),
+                    integerProperty("benchmark.iterations", DEFAULT_MEASURED_ITERATIONS));
 
-        System.out.println();
-        System.out.print(result.formatReport());
-        System.out.println("----------------------------------------");
+            System.out.println();
+            System.out.print(result.formatReport());
+            System.out.println("----------------------------------------");
+        }
     }
 
     private void verifyKeywordSearch(ModuleCatalogue catalogue) {
@@ -128,6 +165,44 @@ public final class ModuleCatalogueBenchmarkTest {
 
     private int integerProperty(String name, int defaultValue) {
         return Integer.parseInt(System.getProperty(name, Integer.toString(defaultValue)));
+    }
+
+    private static List<KeywordSearchAlgorithm> selectAlgorithms(String[] args) {
+        if (args.length > 1) {
+            throw new IllegalArgumentException("Expected one algorithm name");
+        }
+
+        String selection = args.length == 0
+                ? "linear"
+                : args[0].toLowerCase(Locale.ROOT);
+        KeywordSearchAlgorithm linear = new LinearKeywordSearch();
+        KeywordSearchAlgorithm second = new SecondKeywordSearchPlaceholder();
+
+        switch (selection) {
+            case "linear":
+                return Arrays.asList(linear);
+            case "second":
+                return Arrays.asList(second);
+            case "all":
+                return Arrays.asList(linear, second);
+            default:
+                throw new IllegalArgumentException("Unknown algorithm: " + selection);
+        }
+    }
+
+    private static String selectedNames(List<KeywordSearchAlgorithm> algorithms) {
+        List<String> names = new ArrayList<>();
+        for (KeywordSearchAlgorithm algorithm : algorithms) {
+            names.add(algorithm.commandName());
+        }
+        return String.join(", ", names);
+    }
+
+    private static void printUsage() {
+        System.out.println("Usage: ./run-benchmarks.sh [linear|second|all]");
+        System.out.println("  linear  Existing linear keyword search (default)");
+        System.out.println("  second  Placeholder for the future second algorithm");
+        System.out.println("  all     Run both selectable implementations");
     }
 
     private static void require(boolean condition, String message) {

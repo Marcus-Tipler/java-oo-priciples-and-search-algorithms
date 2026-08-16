@@ -6,12 +6,14 @@ import java.util.Locale;
 public final class BenchmarkResult {
     private static final double NANOSECONDS_PER_MILLISECOND = 1_000_000.0;
 
+    private final String algorithm;
     private final String dataset;
     private final int recordCount;
     private final String keyword;
     private final long[] elapsedNanoseconds;
 
     public BenchmarkResult(
+            String algorithm,
             String dataset,
             int recordCount,
             String keyword,
@@ -19,6 +21,7 @@ public final class BenchmarkResult {
         if (elapsedNanoseconds.length == 0) {
             throw new IllegalArgumentException("At least one measurement is required");
         }
+        this.algorithm = algorithm;
         this.dataset = dataset;
         this.recordCount = recordCount;
         this.keyword = keyword;
@@ -64,7 +67,8 @@ public final class BenchmarkResult {
     public String formatReport() {
         return String.format(
                 Locale.ROOT,
-                "Dataset: %s%n"
+                "Algorithm: %s%n"
+                        + "Dataset: %s%n"
                         + "Records: %,d%n"
                         + "Iterations: %d%n%n"
                         + "Keyword: %s%n%n"
@@ -72,6 +76,7 @@ public final class BenchmarkResult {
                         + "Maximum:  %.3f ms%n"
                         + "Mean:     %.3f ms%n"
                         + "Median:   %.3f ms%n",
+                algorithm,
                 dataset,
                 recordCount,
                 elapsedNanoseconds.length,

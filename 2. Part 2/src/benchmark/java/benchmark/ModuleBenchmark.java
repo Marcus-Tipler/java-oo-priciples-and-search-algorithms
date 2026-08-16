@@ -2,6 +2,7 @@ package benchmark;
 
 import catalogue.ModuleCatalogue;
 import catalogue.OptionalModule;
+import catalogue.search.KeywordSearchAlgorithm;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,11 +12,13 @@ public final class ModuleBenchmark {
 
     public BenchmarkResult benchmarkKeywordSearch(
             ModuleCatalogue catalogue,
+            KeywordSearchAlgorithm algorithm,
             String dataset,
             String keyword,
             int warmUpIterations,
             int measuredIterations) {
         Objects.requireNonNull(catalogue, "catalogue");
+        Objects.requireNonNull(algorithm, "algorithm");
         Objects.requireNonNull(dataset, "dataset");
         Objects.requireNonNull(keyword, "keyword");
         if (warmUpIterations < 0) {
@@ -25,19 +28,20 @@ public final class ModuleBenchmark {
             throw new IllegalArgumentException("At least one measured iteration is required");
         }
 
-        List<OptionalModule> expectedResults = null;
+        List<OptionalModule> expectedResults = catalogue.searchByKeyword(keyword);
         for (int iteration = 0; iteration < warmUpIterations; iteration++) {
-            expectedResults = catalogue.searchByKeyword(keyword);
-            resultSizeBlackHole = expectedResults.size();
-        }
-        if (expectedResults == null) {
-            expectedResults = catalogue.searchByKeyword(keyword);
+            List<OptionalModule> warmUpResults = algorithm.search(catalogue, keyword);
+            resultSizeBlackHole = warmUpResults.size();
+            if (!warmUpResults.equals(expectedResults)) {
+                throw new AssertionError(
+                        algorithm.displayName() + " returned incorrect warm-up results");
+            }
         }
 
         long[] measurements = new long[measuredIterations];
         for (int iteration = 0; iteration < measuredIterations; iteration++) {
             long start = System.nanoTime();
-            List<OptionalModule> actualResults = catalogue.searchByKeyword(keyword);
+            List<OptionalModule> actualResults = algorithm.search(catalogue, keyword);
             long end = System.nanoTime();
 
             measurements[iteration] = end - start;
@@ -45,10 +49,12 @@ public final class ModuleBenchmark {
 
             // Correctness is checked outside the timed section.
             if (!actualResults.equals(expectedResults)) {
-                throw new AssertionError("Keyword search returned inconsistent results");
+                throw new AssertionError(
+                        algorithm.displayName() + " returned incorrect results");
             }
         }
 
-        return new BenchmarkResult(dataset, catalogue.size(), keyword, measurements);
+        return new BenchmarkResult(
+                algorithm.displayName(), dataset, catalogue.size(), keyword, measurements);
     }
 }
