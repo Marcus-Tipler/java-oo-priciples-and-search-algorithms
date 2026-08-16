@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2026-08-12T21:47:18.748Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="imB5gRL3c7ZKO9yI64ua" version="21.6.8" type="device" pages="3">
+<mxfile host="Electron" modified="2026-08-12T21:48:01.508Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="0nEppibE9rM-jAYkYePb" version="21.6.8" type="device" pages="3">
   <diagram name="UC Diagram" id="bDbWYYItGOSMcUoagK6O">
     <mxGraphModel dx="1578" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -145,7 +145,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="_xgYF-k-do0h7tclqUcp" name="Class Diagram">
-    <mxGraphModel dx="1683" dy="1259" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2680" dy="1927" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -546,12 +546,12 @@
     </mxGraphModel>
   </diagram>
   <diagram id="r-5Slvb9ffnVgSJCRQeG" name="Sequence Diagram">
-    <mxGraphModel dx="1865" dy="1249" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1710" dy="1145" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="CC69xl2OX8GMqgzq2I2H-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAF8;" vertex="1" parent="1">
-          <mxGeometry y="260" width="1740" height="470" as="geometry" />
+          <mxGeometry y="240" width="1740" height="490" as="geometry" />
         </mxCell>
         <mxCell id="EXN1nKmEXdIY1FcFsBMO-112" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F97316;strokeColor=#18141D;" vertex="1" parent="1">
           <mxGeometry x="80" y="280" width="240" height="50" as="geometry" />
@@ -783,6 +783,9 @@
         </mxCell>
         <mxCell id="CC69xl2OX8GMqgzq2I2H-44" value="&lt;font color=&quot;#18141d&quot;&gt;14. Show success&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="40" y="636.5" width="150" height="12.5" as="geometry" />
+        </mxCell>
+        <mxCell id="yOYSX_luhRSlr0Zee3BX-1" value="&lt;b style=&quot;border-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;u style=&quot;border-color: rgb(0, 0, 0);&quot;&gt;StudentJobPortal Application&lt;/u&gt;&lt;/b&gt;" style="text;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="10" y="240" width="1720" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
