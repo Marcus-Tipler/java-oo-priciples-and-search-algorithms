@@ -8,3 +8,7 @@ Part 2 - Make a program more efficient at larger scale use.
 - [ ] Make 2 test-able versions of the program, and run some tests.
 - [ ] Write a report on findings and compare the newly acquired test data
 - [ ] Publish the git trees to GitHub and give access to Marking Team.
+- [ ] Go through template and proforma to ensure everything is as it should be.
+- [ ] ReadMe files for each root
+
+Recommend: use averages of three iterations for good quality data that can be relied upon.
