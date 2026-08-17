@@ -1,0 +1,8 @@
+- Used provided template
+- Renamed report according to proforma
+- turned the DOCX in to PDF for sending (a lot of effort has gone in to designing the document and older versions of WORD can break this, so i am turning this in to a PDF to send.)
+- Added cover sheet. (added to gitignore because of presence of Signature)
+- Git Repo has committed code
+- Marking Team has been invited for access
+- Not DOCX but PDF because i'm using a weird education version of WORD and it doesn't work with other versions for some reason. (microsoft things i guess)
+- All links and Student Numbers are provided
