@@ -6,3 +6,5 @@
 - Marking Team has been invited for access
 - Not DOCX but PDF because i'm using a weird education version of WORD and it doesn't work with other versions for some reason. (microsoft things i guess)
 - All links and Student Numbers are provided
+- Gone through AI-Pre-Check Assessment and fixed several issues, filtered out the "BS" as Dr. Langbein said to do, and re-exported final Report.
+- Added final declarations for AI usage

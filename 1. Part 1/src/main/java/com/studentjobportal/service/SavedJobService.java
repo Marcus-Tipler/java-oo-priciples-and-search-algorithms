@@ -28,7 +28,7 @@ public final class SavedJobService {
         requireExistingJob(jobID);
 
         if (!savedJobRepository.save(jobID)) {
-            throw new DuplicateSavedJobException(jobID); // FIXME: please create file for this
+            throw new DuplicateSavedJobException(jobID);
         }
     }
 
